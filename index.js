@@ -1,10 +1,12 @@
 require("dotenv").config();
 
+const express = require("express");
 const mongoose = require("mongoose");
+
 const http = require("http");
-const { MongoClient, ServerApiVersion } = require("mongodb");
 
 mongoose.set("strictQuery", false);
+const app = express();
 
 const hostname = process.env.HOSTNAME;
 const port = process.env.PORT;
@@ -22,23 +24,24 @@ server.listen(port, hostname, () => {
   console.log(`Server running at http://${hostname}:${port}/`);
 });
 
-mongoose.connect(
-  `mongodb+srv://${db_username}:${[
-    db_password,
-  ]}@diabeticapp-cluster.qbmzh8t.mongodb.net/?retryWrites=true&w=majority`,
-  {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  }
-);
-
-const db = mongoose.connection;
-
-db.on("error", console.error.bind(console, "connection error: "));
-
-db.once("open", function () {
-  console.log("MongoDB connected successfully");
-  app.listen(3001, () => {
-    console.log("Listening on port 3001");
+mongoose
+  .connect(
+    // `mongodb+srv://${db_username}:${[
+    //   db_password,
+    // ]}@diabeticapp-cluster.qbmzh8t.mongodb.net/?retryWrites=true&w=majority`,
+    "mongodb+srv://ayush:ayush123@diabetic-cluster.6wulxnr.mongodb.net/?retryWrites=true&w=majority",
+    {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    }
+  )
+  .then(() => {
+    console.log("Connected to MongoDB Atlas");
+    // Start the server once connected to the database
+    app.listen(port, () => {
+      console.log(`Server running at http://localhost:${port}`);
+    });
+  })
+  .catch((error) => {
+    console.error("Error connecting to MongoDB Atlas:", error);
   });
-});
