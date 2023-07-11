@@ -25,6 +25,9 @@ const uri = process.env.URI;
 // });
 
 const userCarbsData = require("./routes/userCarbsRoute");
+app.get("/", (req, res) => {
+  res.send("Hello");
+});
 app.use("/api", userCarbsData);
 
 // server.listen(port, hostname, () => {
