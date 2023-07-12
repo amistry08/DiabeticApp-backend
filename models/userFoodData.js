@@ -26,6 +26,10 @@ const userMealSchema = new mongoose.Schema({
     type: String,
     default: Date.now(),
   },
+  insulinDose: {
+    type: Number,
+    required: true,
+  },
 });
 
 module.exports = userMeal = mongoose.model("userMealSchema", userMealSchema);
