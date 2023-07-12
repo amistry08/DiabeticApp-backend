@@ -1,4 +1,5 @@
 const userMealSchema = require("../models/userFoodData");
+const userMealDateSchema = require("../models/userMealDates");
 
 const storeUserData = (req, res) => {
   const { userId, mealItems, totalCarbs, mealType } = req.body;
@@ -16,6 +17,25 @@ const storeUserData = (req, res) => {
   });
 
   console.log("Current Time:", formattedTime);
+
+  userMealDateSchema.findOne({ mealDate: mealDate }).then((existingDate) => {
+    if (existingDate) {
+      // If mealDate already exists, do not save a new entry
+      console.log("MealDate already exists");
+      return;
+    }
+
+    const newUserMealDateSchema = new userMealDateSchema({
+      userId,
+      mealDate,
+    });
+
+    newUserMealDateSchema.save().then((dateSchema) => {
+      // Handle successful save
+      console.log("New userMealDateSchema saved ");
+    });
+  });
+
   const newUserMealSchema = new userMealSchema({
     userId,
     mealItems,
@@ -25,7 +45,9 @@ const storeUserData = (req, res) => {
   });
 
   newUserMealSchema.save().then((mealSchema) => {
-    res.send("Data received and processed successfully.");
+    // Handle successful save
+    console.log("New userMealSchema saved");
+    res.status(200).send("New userMealSchema saved");
   });
 };
 
