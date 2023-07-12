@@ -2,7 +2,7 @@ const userMealSchema = require("../models/userFoodData");
 const userMealDateSchema = require("../models/userMealDates");
 
 const storeUserData = (req, res) => {
-  const { userId, mealItems, totalCarbs, mealType } = req.body;
+  const { userId, mealItems, totalCarbs, mealType, insulinDose } = req.body;
   const currentDate = new Date();
   const day = String(currentDate.getDate()).padStart(2, "0");
   const month = String(currentDate.getMonth() + 1).padStart(2, "0");
@@ -42,6 +42,7 @@ const storeUserData = (req, res) => {
     totalCarbs,
     mealType,
     mealDate,
+    insulinDose,
   });
 
   newUserMealSchema.save().then((mealSchema) => {
@@ -121,9 +122,29 @@ const updateByIdAndFoodType = async (req, res) => {
   }
 };
 
+const getCarbDetailsHomeScreen = async (req, res) => {
+  try {
+    const { userId } = req.query;
+    const currentDate = new Date().toLocaleDateString("en-GB");
+    const userMeal = await userMealSchema.find({
+      userId,
+      mealDate: { $eq: currentDate },
+    });
+    if (userMeal) {
+      res.status(200).json(userMeal);
+    } else {
+      res.status(404).json(null);
+    }
+  } catch (error) {
+    console.error("Error fetching user meal:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
 module.exports = {
   storeUserData,
   getDataByFoodType_Uid_Date,
   getUserDataByDate,
   updateByIdAndFoodType,
+  getCarbDetailsHomeScreen,
 };

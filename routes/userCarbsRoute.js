@@ -12,4 +12,6 @@ router.get("/getDataByDate", dataController.getUserDataByDate); //Will be Used i
 
 router.put("/updateByIdAndFoodType", dataController.updateByIdAndFoodType); //Update Current Day Meal
 
+router.get("/homeScreenCarbDetails", dataController.getCarbDetailsHomeScreen); // Get Carbs Details for home screen
+
 module.exports = router;
