@@ -18,23 +18,28 @@ const storeUserData = (req, res) => {
 
   console.log("Current Time:", formattedTime);
 
-  userMealDateSchema.findOne({ mealDate: mealDate }).then((existingDate) => {
-    if (existingDate) {
-      // If mealDate already exists, do not save a new entry
-      console.log("MealDate already exists");
-      return;
-    }
-
-    const newUserMealDateSchema = new userMealDateSchema({
+  userMealDateSchema
+    .findOne({
       userId,
-      mealDate,
-    });
+      mealDate: mealDate,
+    })
+    .then((existingDate) => {
+      if (existingDate) {
+        // If mealDate already exists, do not save a new entry
+        console.log("MealDate already exists");
+        return;
+      }
 
-    newUserMealDateSchema.save().then((dateSchema) => {
-      // Handle successful save
-      console.log("New userMealDateSchema saved ");
+      const newUserMealDateSchema = new userMealDateSchema({
+        userId,
+        mealDate,
+      });
+
+      newUserMealDateSchema.save().then((dateSchema) => {
+        // Handle successful save
+        console.log("New userMealDateSchema saved ");
+      });
     });
-  });
 
   const newUserMealSchema = new userMealSchema({
     userId,
