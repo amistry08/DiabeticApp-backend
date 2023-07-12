@@ -29,7 +29,7 @@ const storeUserData = (req, res) => {
         console.log("MealDate already exists");
         return;
       }
-
+      console.log("New Date ");
       const newUserMealDateSchema = new userMealDateSchema({
         userId,
         mealDate,

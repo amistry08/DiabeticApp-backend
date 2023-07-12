@@ -8,7 +8,6 @@ const userMealDateSchema = new mongoose.Schema({
   mealDate: {
     type: String,
     default: Date.now(),
-    unique: true,
   },
 });
 
