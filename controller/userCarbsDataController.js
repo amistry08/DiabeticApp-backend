@@ -51,8 +51,23 @@ const getDataByFoodType_Uid_Date = async (req, res) => {
   }
 };
 
-const getUserDataByDate = (req, res) => {
-  // console.log('Red Body ',req.body)
+const getUserDataByDate = async (req, res) => {
+  try {
+    const { userId, mealType, mealDate } = req.query;
+    const userMeal = await userMealSchema.findOne({
+      userId,
+      mealType,
+      mealDate,
+    });
+    if (userMeal) {
+      res.status(200).json(userMeal);
+    } else {
+      res.status(404).json(null);
+    }
+  } catch (error) {
+    console.error("Error fetching user meal:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
 };
 
 const updateByIdAndFoodType = async (req, res) => {
