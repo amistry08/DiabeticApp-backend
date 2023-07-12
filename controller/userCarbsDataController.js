@@ -74,12 +74,29 @@ const getDataByFoodType_Uid_Date = async (req, res) => {
   }
 };
 
+const getUserAllDates = async (req, res) => {
+  try {
+    const { userId } = req.query;
+    console.log("user :", userId);
+    const userDates = await userMealDateSchema.find({
+      userId,
+    });
+    if (userDates.length > 0) {
+      res.status(200).json(userDates);
+    } else {
+      res.status(404).json(null);
+    }
+  } catch (error) {
+    console.error("Error fetching user meal:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
 const getUserDataByDate = async (req, res) => {
   try {
-    const { userId, mealType, mealDate } = req.query;
-    const userMeal = await userMealSchema.findOne({
+    const { userId, mealDate } = req.query;
+    const userMeal = await userMealSchema.find({
       userId,
-      mealType,
       mealDate,
     });
     if (userMeal) {
@@ -145,6 +162,7 @@ module.exports = {
   storeUserData,
   getDataByFoodType_Uid_Date,
   getUserDataByDate,
+  getUserAllDates,
   updateByIdAndFoodType,
   getCarbDetailsHomeScreen,
 };
