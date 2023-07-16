@@ -83,9 +83,12 @@ const getUserAllDates = async (req, res) => {
   try {
     const { userId } = req.query;
     console.log("user :", userId);
-    const userDates = await userMealDateSchema.find({
-      userId,
-    });
+    const userDates = await userMealDateSchema
+      .find({
+        userId,
+      })
+      .sort({ mealDate: -1 })
+      .limit(7);
     if (userDates.length > 0) {
       res.status(200).json(userDates);
     } else {
