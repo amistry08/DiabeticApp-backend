@@ -57,6 +57,74 @@ const storeUserData = (req, res) => {
   });
 };
 
+// Calculate new ICR based on historical data
+function calculateNewICR(data) {
+  const targetBloodGlucose = 100;
+  const correctionFactor = 50;
+
+  // Calculate the average correction factor
+  const sumCorrectionFactor = data.reduce(
+    (sum, entry) =>
+      sum + (entry.blood_glucose - targetBloodGlucose) / correctionFactor,
+    0
+  );
+  const averageCorrectionFactor = sumCorrectionFactor / data.length;
+
+  // Calculate the new ICR
+  const initialICR = 10; // Replace with the user's initial ICR
+  const newICR = initialICR * (1 + averageCorrectionFactor);
+
+  return newICR;
+}
+
+const updateBFIcr = async (req, res) => {
+  try {
+    const { userId } = req.query;
+
+    const query = {
+      userId: userId,
+      mealType: "Breakfast",
+    };
+
+    const options = {
+      sort: { timestamp: -1 },
+      limit: 7, // Limit the results to 7 entries
+    };
+
+    const userBFData = await userMealSchema.find(query, null, options);
+
+    console.log("User Bd Data", userBFData);
+
+    const historicalData = [
+      // Replace this with your actual historical data
+      {
+        timestamp: "2023-07-21 08:00",
+        insulin_dose: 5,
+        blood_glucose: 50,
+        carbs: 50,
+      },
+      {
+        timestamp: "2023-07-22 08:00",
+        insulin_dose: 5,
+        blood_glucose: 80,
+        carbs: 50,
+      },
+      // {
+      //   timestamp: "2023-07-23 08:00",
+      //   insulin_dose: 5,
+      //   blood_glucose: 90,
+      //   carbs: 50,
+      // },
+    ];
+
+    const newICR = calculateNewICR(historicalData);
+    console.log("New ICr :", newICR);
+    res.status(200).json(newICR);
+  } catch (error) {
+    console.log("Error :", error);
+  }
+};
+
 const getDataByFoodType_Uid_Date = async (req, res) => {
   try {
     const { userId, mealType } = req.query;
@@ -173,4 +241,5 @@ module.exports = {
   getUserAllDates,
   updateByIdAndFoodType,
   getCarbDetailsHomeScreen,
+  updateBFIcr,
 };
