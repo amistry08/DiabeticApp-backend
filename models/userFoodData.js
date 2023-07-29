@@ -5,6 +5,16 @@ const userMealSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  userICR: {
+    type: String,
+    required: true,
+    default: 10,
+  },
+  userCRR: {
+    type: String,
+    default: 50,
+    required: true,
+  },
   mealType: {
     type: String,
     enum: ["Breakfast", "Lunch", "Dinner"], // Allowed values: 1 for breakfast, 2 for lunch, 3 for dinner

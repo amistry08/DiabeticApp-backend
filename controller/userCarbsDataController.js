@@ -65,7 +65,7 @@ function calculateNewICR(data) {
   // Calculate the average correction factor
   const sumCorrectionFactor = data.reduce(
     (sum, entry) =>
-      sum + (entry.blood_glucose - targetBloodGlucose) / correctionFactor,
+      sum + (entry?.bloodGlucoseLevel - targetBloodGlucose) / correctionFactor,
     0
   );
   const averageCorrectionFactor = sumCorrectionFactor / data.length;
@@ -117,7 +117,7 @@ const updateBFIcr = async (req, res) => {
       // },
     ];
 
-    const newICR = calculateNewICR(historicalData);
+    const newICR = calculateNewICR(userBFData);
     console.log("New ICr :", newICR);
     res.status(200).json(newICR);
   } catch (error) {
