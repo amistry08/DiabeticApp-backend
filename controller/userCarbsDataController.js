@@ -2,7 +2,15 @@ const userMealSchema = require("../models/userFoodData");
 const userMealDateSchema = require("../models/userMealDates");
 
 const storeUserData = (req, res) => {
-  const { userId, mealItems, totalCarbs, mealType, insulinDose } = req.body;
+  const {
+    userId,
+    mealItems,
+    totalCarbs,
+    mealType,
+    insulinDose,
+    userICR,
+    userCRR,
+  } = req.body;
   const currentDate = new Date();
   const day = String(currentDate.getDate()).padStart(2, "0");
   const month = String(currentDate.getMonth() + 1).padStart(2, "0");
@@ -48,6 +56,8 @@ const storeUserData = (req, res) => {
     mealType,
     mealDate,
     insulinDose,
+    userICR,
+    userCRR,
   });
 
   newUserMealSchema.save().then((mealSchema) => {
@@ -65,7 +75,7 @@ function calculateNewICR(data) {
   // Calculate the average correction factor
   const sumCorrectionFactor = data.reduce(
     (sum, entry) =>
-      sum + (entry?.bloodGlucoseLevel - targetBloodGlucose) / correctionFactor,
+      sum + (entry?.bloodGlucoseLevel - targetBloodGlucose) / entry.userCRR,
     0
   );
   const averageCorrectionFactor = sumCorrectionFactor / data.length;
@@ -92,31 +102,7 @@ const updateBFIcr = async (req, res) => {
     };
 
     const userBFData = await userMealSchema.find(query, null, options);
-
-    console.log("User Bd Data", userBFData);
-
-    const historicalData = [
-      // Replace this with your actual historical data
-      {
-        timestamp: "2023-07-21 08:00",
-        insulin_dose: 5,
-        blood_glucose: 50,
-        carbs: 50,
-      },
-      {
-        timestamp: "2023-07-22 08:00",
-        insulin_dose: 5,
-        blood_glucose: 80,
-        carbs: 50,
-      },
-      // {
-      //   timestamp: "2023-07-23 08:00",
-      //   insulin_dose: 5,
-      //   blood_glucose: 90,
-      //   carbs: 50,
-      // },
-    ];
-
+    console.log(userBFData);
     const newICR = calculateNewICR(userBFData);
     console.log("New ICr :", newICR);
     res.status(200).json(newICR);
