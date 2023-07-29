@@ -2,7 +2,15 @@ const userMealSchema = require("../models/userFoodData");
 const userMealDateSchema = require("../models/userMealDates");
 
 const storeUserData = (req, res) => {
-  const { userId, mealItems, totalCarbs, mealType, insulinDose } = req.body;
+  const {
+    userId,
+    mealItems,
+    totalCarbs,
+    mealType,
+    insulinDose,
+    userICR,
+    userCRR,
+  } = req.body;
   const currentDate = new Date();
   const day = String(currentDate.getDate()).padStart(2, "0");
   const month = String(currentDate.getMonth() + 1).padStart(2, "0");
@@ -48,6 +56,8 @@ const storeUserData = (req, res) => {
     mealType,
     mealDate,
     insulinDose,
+    userICR,
+    userCRR,
   });
 
   newUserMealSchema.save().then((mealSchema) => {
@@ -55,6 +65,50 @@ const storeUserData = (req, res) => {
     console.log("New userMealSchema saved");
     res.status(200).send("New userMealSchema saved");
   });
+};
+
+// Calculate new ICR based on historical data
+function calculateNewICR(data) {
+  const targetBloodGlucose = 100;
+  const correctionFactor = 50;
+
+  // Calculate the average correction factor
+  const sumCorrectionFactor = data.reduce(
+    (sum, entry) =>
+      sum + (entry?.bloodGlucoseLevel - targetBloodGlucose) / entry.userCRR,
+    0
+  );
+  const averageCorrectionFactor = sumCorrectionFactor / data.length;
+
+  // Calculate the new ICR
+  const initialICR = 10; // Replace with the user's initial ICR
+  const newICR = data.userICR * (1 + averageCorrectionFactor);
+
+  return newICR;
+}
+
+const updateBFIcr = async (req, res) => {
+  try {
+    const { userId } = req.query;
+
+    const query = {
+      userId: userId,
+      mealType: "Breakfast",
+    };
+
+    const options = {
+      sort: { timestamp: -1 },
+      limit: 7, // Limit the results to 7 entries
+    };
+
+    const userBFData = await userMealSchema.find(query, null, options);
+    console.log(userBFData);
+    const newICR = calculateNewICR(userBFData);
+    console.log("New ICr :", newICR);
+    res.status(200).json(newICR);
+  } catch (error) {
+    console.log("Error :", error);
+  }
 };
 
 const getDataByFoodType_Uid_Date = async (req, res) => {
@@ -196,5 +250,6 @@ module.exports = {
   getUserAllDates,
   updateByIdAndFoodType,
   getCarbDetailsHomeScreen,
+  updateBFIcr,
   addBloodGlucose,
 };
