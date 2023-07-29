@@ -18,23 +18,28 @@ const storeUserData = (req, res) => {
 
   console.log("Current Time:", formattedTime);
 
-  userMealDateSchema.findOne({ mealDate: mealDate }).then((existingDate) => {
-    if (existingDate) {
-      // If mealDate already exists, do not save a new entry
-      console.log("MealDate already exists");
-      return;
-    }
-
-    const newUserMealDateSchema = new userMealDateSchema({
+  userMealDateSchema
+    .findOne({
       userId,
-      mealDate,
-    });
+      mealDate: mealDate,
+    })
+    .then((existingDate) => {
+      if (existingDate) {
+        // If mealDate already exists, do not save a new entry
+        console.log("MealDate already exists");
+        return;
+      }
+      console.log("New Date ");
+      const newUserMealDateSchema = new userMealDateSchema({
+        userId,
+        mealDate,
+      });
 
-    newUserMealDateSchema.save().then((dateSchema) => {
-      // Handle successful save
-      console.log("New userMealDateSchema saved ");
+      newUserMealDateSchema.save().then((dateSchema) => {
+        // Handle successful save
+        console.log("New userMealDateSchema saved ");
+      });
     });
-  });
 
   const newUserMealSchema = new userMealSchema({
     userId,
@@ -78,9 +83,12 @@ const getUserAllDates = async (req, res) => {
   try {
     const { userId } = req.query;
     console.log("user :", userId);
-    const userDates = await userMealDateSchema.find({
-      userId,
-    });
+    const userDates = await userMealDateSchema
+      .find({
+        userId,
+      })
+      .sort({ mealDate: -1 })
+      .limit(7);
     if (userDates.length > 0) {
       res.status(200).json(userDates);
     } else {
