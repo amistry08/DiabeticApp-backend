@@ -15,6 +15,8 @@ router.get("/userDates", dataController.getUserAllDates);
 
 router.put("/updateByIdAndFoodType", dataController.updateByIdAndFoodType); //Update Current Day Meal
 
+router.put("/addBloodGlucose", dataController.addBloodGlucose); // Add BloodGlucose to Meals
+
 router.get("/homeScreenCarbDetails", dataController.getCarbDetailsHomeScreen); // Get Carbs Details for home screen
 
 module.exports = router;
