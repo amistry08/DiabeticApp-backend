@@ -82,7 +82,7 @@ function calculateNewICR(data) {
 
   // Calculate the new ICR
   const initialICR = 10; // Replace with the user's initial ICR
-  const newICR = initialICR * (1 + averageCorrectionFactor);
+  const newICR = data.userICR * (1 + averageCorrectionFactor);
 
   return newICR;
 }
