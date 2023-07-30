@@ -73,27 +73,28 @@ function calculateNewICR(data) {
   const correctionFactor = 50;
 
   // Calculate the average correction factor
-  const sumCorrectionFactor = data.reduce(
-    (sum, entry) =>
-      sum + (entry?.bloodGlucoseLevel - targetBloodGlucose) / entry.userCRR,
-    0
-  );
+  const sumCorrectionFactor = data.reduce((sum, entry) => {
+    return (
+      sum + (entry?.bloodGlucoseLevel - targetBloodGlucose) / entry.userCRR
+    );
+  }, 0);
   const averageCorrectionFactor = sumCorrectionFactor / data.length;
 
   // Calculate the new ICR
   const initialICR = 10; // Replace with the user's initial ICR
-  const newICR = data.userICR * (1 + averageCorrectionFactor);
+  console.log("da corr :", data[0].userICR, averageCorrectionFactor);
+  const newICR = Number(data[0].userICR) * (1 + averageCorrectionFactor);
 
   return newICR;
 }
 
-const updateBFIcr = async (req, res) => {
+const updateUserICR = async (req, res) => {
   try {
-    const { userId } = req.query;
+    const { userId, mealType } = req.query;
 
     const query = {
       userId: userId,
-      mealType: "Breakfast",
+      mealType: mealType,
     };
 
     const options = {
@@ -250,6 +251,6 @@ module.exports = {
   getUserAllDates,
   updateByIdAndFoodType,
   getCarbDetailsHomeScreen,
-  updateBFIcr,
+  updateUserICR,
   addBloodGlucose,
 };
