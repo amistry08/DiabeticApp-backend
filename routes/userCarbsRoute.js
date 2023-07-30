@@ -19,6 +19,6 @@ router.put("/addBloodGlucose", dataController.addBloodGlucose); // Add BloodGluc
 
 router.get("/homeScreenCarbDetails", dataController.getCarbDetailsHomeScreen); // Get Carbs Details for home screen
 
-router.post("/updateUserICR", dataController.updateUserIcr);
+router.get("/updateUserICR", dataController.updateUserIcr);
 
 module.exports = router;
