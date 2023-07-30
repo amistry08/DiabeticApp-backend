@@ -87,13 +87,13 @@ function calculateNewICR(data) {
   return newICR;
 }
 
-const updateBFIcr = async (req, res) => {
+const updateUserIcr = async (req, res) => {
   try {
-    const { userId } = req.query;
+    const { userId, mealType } = req.query;
 
     const query = {
       userId: userId,
-      mealType: "Breakfast",
+      mealType: mealType,
     };
 
     const options = {
@@ -250,6 +250,6 @@ module.exports = {
   getUserAllDates,
   updateByIdAndFoodType,
   getCarbDetailsHomeScreen,
-  updateBFIcr,
+  updateUserIcr,
   addBloodGlucose,
 };
