@@ -80,10 +80,12 @@ function calculateNewICR(data) {
   }, 0);
   const averageCorrectionFactor = sumCorrectionFactor / data.length;
 
-  // Calculate the new ICR
+  // Calculate the new ICR rounded to one decimal place
   const initialICR = 10; // Replace with the user's initial ICR
   console.log("da corr :", data[0].userICR, averageCorrectionFactor);
-  const newICR = Number(data[0].userICR) * (1 + averageCorrectionFactor);
+  const newICR = Number(
+    (Number(data[0].userICR) * (1 + averageCorrectionFactor)).toFixed(1)
+  );
 
   return newICR;
 }
